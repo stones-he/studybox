@@ -1,0 +1,110 @@
+<template>
+  <div class="page">
+    <div class="navbar">
+      <div class="navbar-inner sliding">
+        <div class="left">
+          <a href="#" class="link back">
+            <i class="icon icon-back"></i>
+            <span class="ios-only">Back</span>
+          </a>
+        </div>
+        <div class="title">{{this.$route.params.bid}} Unit List</div>
+      </div>
+    </div>
+    <div class="page-content">
+      {{#if units}}
+      <div class="list components-list">
+        <ul>
+          {{#each units}}
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <a href="#" class="item-link ">
+                  <div class="item-title-row">
+                    <div class="item-title">Unit{{this.title}}</div>
+                  </div>
+                </a>
+                <div class="item-title row">
+                  <a href="/book-details/mp3/{{../title}}/unit{{this.title}}" class="item-link ">
+                    <div class="item-title button">Lesson</div>
+                  </a>
+                  <a href="/book-details/wordlist/{{../title}}/unit{{this.title}}" class="item-link ">
+                    <div class="item-title button">WordList</div>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </li>
+          {{/each}}
+        </ul>
+      </div>
+      {{else}}
+      <div class="block block-strong text-align-center">
+        <div class=""></div>
+      </div>
+      {{/if}}
+    </div>
+    <div class="fab fab-left-bottom color-blue">
+      <a href="#">
+        <i class="icon f7-icons ios-only">add</i>
+        <i class="icon f7-icons ios-only">close</i>
+        <i class="icon material-icons md-only">add</i>
+        <i class="icon material-icons md-only">close</i>
+      </a>
+      <div class="fab-buttons fab-buttons-right">
+        <a href="#" @click="loop()">循环</a>
+      </div>
+    </div>
+    <div class="page-content fab-close" id="unitpage">
+      <div class="page-item">
+        <video id="video1" @ended="doEnded">
+          <source src="" type="audio/mpeg">
+        </video>
+      </div>
+    </div>
+  </div>
+</template>
+<script>
+  return {
+    methods: {
+      loop: function () {
+        const self = this;
+        if (self.index > self.units.length) {
+          self.index = 1;
+        }
+        let mp3url = `${self.$root.hostName}/${self.bid}/mp3/unit${self.index}.mp3`;
+        console.log("utils:" + mp3url);
+        let myVideo = $("#video1")[0];
+        myVideo.src = mp3url;
+        // myVideo.currentTime = 200;
+        myVideo.play();
+        // $("#video1").on("ended", self.doEnded);
+        self.index += 1;
+      },
+      doEnded: function (event) {
+        const self = this;
+        self.loop();
+      },
+    },
+    data: function () {
+      return {
+        // book: null,
+      }
+    },
+    on: {
+      pageInit: function (e, page) {
+        var self = this;
+        self.index = 1;
+        console.log(self.$route.params);
+        self.bid = self.$route.params['bid'];
+        self.uid = self.$route.params['uid'];
+        // request user data on page init
+        self.$app.request.get(self.$root.hostName + '/' + self.bid + '/' + self.bid + '.txt', (rdata) => {
+          rdata = eval("(" + rdata + ")");
+          console.log(rdata);
+          self.$setState(rdata);
+        });
+      }
+    },
+  }
+</script>

@@ -1,0 +1,91 @@
+<template>
+  <div class="page">
+    <div class="navbar">
+      <div class="navbar-inner sliding">
+        <div class="left">
+          <a href="#" class="link back">
+            <i class="icon icon-back"></i>
+            <span class="ios-only">Back</span>
+          </a>
+        </div>
+        <div class="title">{{this.$route.params.bid}} {{this.$route.params.uid}} Word List</div>
+      </div>
+    </div>
+    <div class="page-content">
+      {{#if words}}
+      <div class="list components-list">
+        <ul>
+          {{#each words}}
+          <li>
+            <a href="#" class="item-link item-content" @click="play({{@index}})">
+              <div class="item-inner">
+                <div class="item-subtitle">{{en}}</div>
+                <div class="item-after">{{cn}}</div>
+              </div>
+            </a>
+          </li>
+          {{/each}}
+        </ul>
+      </div>
+      {{else}}
+      <div class="block block-strong text-align-center">
+        <div class="">还没有要学习的内容，休息一下！</div>
+      </div>
+      {{/if}}
+    </div>
+    <div class="row ">
+      <video id="wvideo1" @timeupdate="vtimeupdate">
+        <source src="" type="audio/mpeg">
+      </video>
+    </div>
+  </div>
+</template>
+<script>
+  return {
+    data: function () {
+      return {
+        words: [],
+      }
+    },
+    methods: {
+      play: function (index) {
+        var self = this;
+        let data = self.words[index];
+        console.log(data);
+        self.myVideo = $("#wvideo1")[0];
+
+        if (self.myVideo.paused) {
+          mp3url = `${self.$root.hostName}/${self.bid}/wordmp3/${self.uid}.mp3`;
+          console.log(mp3url);
+          self.myVideo.src = mp3url;
+          self.myVideo.endTime = (data.et / 1000);
+          self.myVideo.currentTime = (data.st / 1000);
+          self.myVideo.play();
+        }
+      },
+      vtimeupdate: function (event) {
+        // console.log(event);
+        var self = this;
+        if (self.myVideo.currentTime >= self.myVideo.endTime && self.myVideo.paused === false) {
+          self.myVideo.pause();
+        }
+      },
+    },
+    on: {
+      pageInit: function (e, page) {
+        var self = this;
+        console.log(self.$route.params);
+        self.bid = self.$route.params['bid'];
+        self.uid = self.$route.params['uid'];
+        // request user data on page init
+        self.$app.request.get(self.$root.hostName + '/' + self.bid + '/wordlist.txt', (rdata) => {
+          rdata = eval("(" + rdata + ")");
+          console.log(rdata);
+          self.$setState({
+            "words": rdata[self.uid]
+          });
+        });
+      }
+    },
+  }
+</script>

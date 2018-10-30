@@ -1,0 +1,295 @@
+<template>
+	<div class="page">
+		<div class="navbar">
+			<div class="navbar-inner sliding">
+				<div class="left">
+					<a href="#" class="link back">
+						<i class="icon icon-back"></i>
+						<span class="ios-only">Back</span>
+					</a>
+				</div>
+				<div class="title">Book Details</div>
+			</div>
+		</div>
+		<!-- <div class="fab fab-left-bottom color-blue">
+			<a href="#">
+				<i class="icon f7-icons ios-only">add</i>
+				<i class="icon f7-icons ios-only">close</i>
+				<i class="icon material-icons md-only">add</i>
+				<i class="icon material-icons md-only">close</i>
+			</a>
+			<div class="fab-buttons fab-buttons-right">
+				<a href="#" @click="playPause">播/停</a>
+				<a href="#" @click="speed(0.8)">0.8</a>
+				<a href="#" @click="speed(1.0)">1.0</a>
+				<a href="#" @click="speed(1.5)">1.5</a>
+				<a href="#" @click="loop(2.0)">循环</a>
+			</div>
+		</div> -->
+		<div class="page-content" id="unitpage">
+			<div class="demo-swiper-custom">
+				<div data-pagination='{"el": ".swiper-pagination", "clickable": true}' data-navigation='{"nextEl": ".swiper-button-next", "prevEl": ".swiper-button-prev"}'
+				 data-space-between="10" class="swiper-container swiper-init">
+					<!-- <div class="swiper-pagination"></div> -->
+					<div class="swiper-wrapper">
+						<!-- <img id="swiperImg" class="swiper-slide swiper-slide-active" usemap="#planetmap" src="http://www.studybox.com/6a/6.jpg" /> -->
+					</div>
+					<div class="swiper-button-prev"></div>
+					<div class="swiper-button-next"></div>
+				</div>
+			</div>
+		</div>
+		<div class="row ">
+			<video id="video1">
+				<source src="" type="audio/mpeg">
+			</video>
+		</div>
+	</div>
+</template>
+<script>
+	return {
+		methods: {
+			play: function (surl, start, end) {
+				console.log(" surl=%s, start=%s, end=%s", surl, start, end);
+				if (!surl || !start || !end) {
+					return;
+				}
+				const self = this;
+				surl = `${self.$root.hostName}/${self.bid}/mp3/${surl}.mp3`;
+				if (self.uid === 'unitword') {
+					surl = surl.replace('\/mp3\/', '\/wordmp3\/');
+				}
+				//
+				console.log("src=%s,surl=%s", self.myVideo.src, surl);
+				// if (self.myVideo.src != surl) {
+				self.myVideo.src = surl;
+				// }
+				self.myVideo.currentTime = start;
+				// self.myVideo.onTimeUpdate =
+				$("#video1").on("timeupdate", function (event) {
+					console.log(event);
+					//
+					if (self.myVideo.currentTime >= end && self.myVideo.paused === false) {
+						self.myVideo.pause();
+					}
+				});
+				// self.myVideo.pause();
+				if (self.myVideo.paused) {
+					var playPromise = self.myVideo.play();
+					// if (playPromise !== undefined) {
+					// 	playPromise.then(_ => {
+					// 			// self.myVideo.pause();
+					// 		})
+					// 		.catch(error => {
+					// 			// Auto-play was prevented
+					// 			// Show paused UI.
+					// 			self.myVideo.play();
+					// 		});
+					// }
+				}
+			},
+			playPause: function () {
+				const self = this;
+				if (self.uid === 'unitword') {
+					return;
+				}
+				//let myVideo = $("#video1")[0];
+				if (self.myVideo.paused) {
+					let mp3url = $('.swiper-slide-active img').attr("mp3");
+					if (mp3url === '' || mp3url === undefined || mp3url === 'undefined') {
+						return;
+					}
+					mp3url = `${self.$root.hostName}/${self.bid}/mp3/${mp3url}.mp3`;
+					console.log(mp3url);
+					self.myVideo.src = mp3url;
+					self.myVideo.osrc = mp3url;
+					self.myVideo.wmp3 = mp3url.replace('\/mp3\/', '\/wordmp3\/');
+					// myVideo.currentTime = 210;
+					self.myVideo.play();
+					$("#video1").on("ended", self.doEnded);
+				} else {
+					console.log("myVideo:%s", self.myVideo.currentTime);
+					self.myVideo.pause();
+				}
+			},
+			speed: function (sp) {
+				//let myVideo = $("#video1")[0];
+				const self = this;
+				self.myVideo.playbackRate = sp;
+			},
+			loop: function () {
+				const self = this;
+				// let myVideo = $("#video1")[0];
+				console.log("=========%s", self.myVideo);
+				if (self.myVideo.wloop)
+					self.myVideo.wloop = false;
+				else
+					self.myVideo.wloop = true;
+			},
+			doEnded: function (event) {
+				var self = this;
+				console.log("video be ended.");
+				console.log(event);
+				console.log(self.jsondata);
+				self.index = self.jsondata.wl - self.jsondata.start;
+				self.swiperTop.slideTo(self.index);
+				//
+				//let myVideo = $("#video1")[0];
+				//当前是单词
+				if (self.myVideo.src.indexOf('wordmp3') > 0) {
+					console.log("myVideo.wloop:%s", self.myVideo.wloop);
+					if (self.myVideo.wloop)
+						self.myVideo.src = self.myVideo.osrc;
+					else
+						return;
+				} else {
+					self.myVideo.src = self.myVideo.wmp3;
+				}
+				self.myVideo.play();
+			},
+		},
+		on: {
+			pageBeforeRemove: function () {
+				var self = this;
+				self.swiperTop.destroy();
+			},
+			pageInit: function () {
+				console.log('video pageInit');
+				var self = this;
+				console.log(self.$route.params);
+				//当前选择的科本id
+				self.bid = self.$route.params['bid'];
+				//当前选择的单元id
+				self.uid = self.$route.params['uid'];
+				//当前页码id
+				self.pageId = 92;
+				self.index = 1;
+				//所选择单元的数据信息
+				self.jsondata = {};
+				//
+				self.pages = {};
+				//当前页可选择的包子框定义
+				self.sentences = {};
+				//上一个被选择的句子显示框对象
+				self.lastSelectedSentence = {};
+				//页码对应单元
+				self.pageToUnit = {};
+				//从后面获取当前数据对象，进行相关页面的初始化
+				self.$app.request.get(`${self.$root.hostName}/${self.bid}/${self.bid}.txt`, function (data) {
+					self.jsondata = eval("(" + data + ")");
+					console.log("%s:%s", self.jsondata.start, self.jsondata.last);
+					//
+					self.swiperTop = self.$app.swiper.create('.swiper-container', {
+						// spaceBetween: 10,
+						// noSwiping: true,
+						slidesPerView: 1,
+						observer: true,
+						observeParents: true,
+						loop: false,
+						direction: 'horizontal',
+						// allowTouchMove: false,
+						navigation: {
+							nextEl: '.swiper-button-next',
+							prevEl: '.swiper-button-prev',
+						},
+						virtual: {
+							slides: (function () {
+								console.log("start load slides data");
+								var slides = [];
+								let units = self.jsondata.units;
+								let t_mp3 = {};
+								units.forEach(unit => {
+									t_mp3[unit.uidx] = 'unit' + unit.title;
+								});
+								console.log(t_mp3);
+								for (var i = self.jsondata.start; i <= self.jsondata.last; i++) {
+									let mp3 = t_mp3[i] || "";
+									if (mp3 === self.uid) {
+										self.index = i - self.jsondata.start;
+									}
+									slides.push(
+										`<img class="swiper-slide" mp3="${mp3}" pageId="${i}" src="${self.$root.hostName}/${self.bid}/${i}.jpg" />`
+									);
+								}
+								self.pageToUnit = t_mp3;
+								return slides;
+							}()),
+						},
+						on: {
+							// touchStart: function (event) {
+							// console.log("swiper click,sx=%d,sy=%d", event.changedTouches[0].clientX, event.changedTouches[0].clientY);
+							// console.log(event);
+							// return false;
+							// },
+							// touchEnd: function (event) {
+							// console.log("swiper click,ex=%d,ey=%d", event.changedTouches[0].clientX, event.changedTouches[0].clientY);
+							// console.log(event);
+							// return false;
+							// },
+							slideChangeTransitionStart: function () {
+								for (let i = 0; i < self.sentences.length; i++) {
+									let sentence = self.sentences[i];
+									$('#sent_' + sentence.id).remove();
+								}
+							},
+							slideChangeTransitionEnd: function (swiper) {
+								/*
+								 */
+								self.pageId = this.activeIndex + self.jsondata.start;
+								self.sentences = self.jsondata.pages[self.pageId];
+								if (self.sentences === undefined) {
+									self.sentences = [];
+								}
+								console.log("swiper.index=%s,pageId=%s", this.activeIndex, self.pageId);
+							},
+							click: function (event) {
+								if (self.lastSelectedSentence.remove)
+									self.lastSelectedSentence.remove();
+								console.log("swiper click,X=%d,Y=%d", event.changedTouches[0].clientX, event.changedTouches[0].clientY);
+								let x = event.changedTouches[0].clientX,
+									y = event.changedTouches[0].clientY;
+								//
+								let st = 0,
+									et = 0;
+								let mp3url = "";
+								for (let i = 0; i < self.sentences.length; i++) {
+									let sentence = self.sentences[i];
+									if (x >= sentence.sx && x <= sentence.ex &&
+										y >= sentence.sy && y <= sentence.ey) {
+										console.log("click on current sentence.");
+										let div = $("#unitpage").append(
+											`<div id="sent_${sentence.id}" style="position:fixed;width:${sentence.ex - sentence.sx}px;
+											height:${sentence.ey - sentence.sy}px;top:${sentence.sy}px;left:${sentence.sx}px;
+											border:1px solid red;z-index:2">	</div>`
+										);
+										self.lastSelectedSentence = $('#sent_' + sentence.id);
+										mp3url = sentence.id.split("_")[0];
+										mp3url = `unit${mp3url}`;
+										st = sentence.st;
+										et = sentence.et;
+										console.log($('#sent_' + sentence.id));
+									}
+								}
+								self.play(mp3url, st, et);
+								// console.log(event);
+							},
+						}
+					});
+					self.swiperTop.slideTo(self.index);
+
+				});
+				//index mp3 to uidx
+				//page video object
+				self.myVideo = $("#video1")[0];
+				//
+				console.log(self);
+				console.log('page inited.%s', self.myVideo);
+			},
+			pageAfterin: function () {
+				let self = this;
+				self.playPause();
+				self.loop();
+			},
+		},
+	};
+</script>

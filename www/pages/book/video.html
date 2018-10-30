@@ -1,0 +1,104 @@
+<template>
+	<div class="page">
+		<div class="navbar">
+			<div class="navbar-inner sliding">
+				<div class="left">
+					<a href="#" class="link back">
+						<i class="icon icon-back"></i>
+						<span class="ios-only">Back</span>
+					</a>
+				</div>
+				<div class="title">Book Details</div>
+			</div>
+		</div>
+		<div class="fab fab-left-bottom color-blue">
+			<a href="#">
+				<i class="icon f7-icons ios-only">add</i>
+				<i class="icon f7-icons ios-only">close</i>
+				<i class="icon material-icons md-only">add</i>
+				<i class="icon material-icons md-only">close</i>
+			</a>
+			<div class="fab-buttons fab-buttons-right">
+				<a href="#" @click="playPause">播/停</a>
+				<a href="#" @click="speed(0.8)">0.8</a>
+				<a href="#" @click="speed(1.0)">1.0</a>
+				<a href="#" @click="speed(1.5)">1.5</a>
+				<a href="#" @click="loop(2.0)">循环</a>
+			</div>
+		</div>
+		<div class="page-content fab-close" id="videoPage">
+			<div class="page-item">
+				<video id="videoPageVideo" controls @ended="this.doVideoPageEnded">
+					<source src="" type="audio/mpeg">
+				</video>
+			</div>
+		</div>
+	</div>
+</template>
+<script>
+	return {
+		methods: {
+			playPause: function () {
+				const self = this;
+				//
+				if (self.uid === 'unitword') {
+					return;
+				}
+				if (self.myVideo.paused) {
+					let mp3url = `${self.$root.hostName}/${self.bid}/mp3/${self.uid}.mp3`;
+					console.log(`video:${mp3url}`);
+					self.myVideo.src = mp3url;
+					self.myVideo.osrc = mp3url;
+					self.myVideo.wmp3 = mp3url.replace('\/mp3\/', '\/wordmp3\/');
+					// myVideo.currentTime = 210;
+					self.myVideo.play();
+				} else {
+					console.log("myVideo:%s", self.myVideo.currentTime);
+					self.myVideo.pause();
+				}
+			},
+			speed: function (sp) {
+				const self = this;
+				self.myVideo.playbackRate = sp;
+			},
+			loop: function () {
+				const self = this;
+				console.log("=========%s", self.myVideo);
+				if (self.myVideo.wloop)
+					self.myVideo.wloop = false;
+				else
+					self.myVideo.wloop = true;
+			},
+			doVideoPageEnded: function (event) {
+				var self = this;
+				console.log("video be ended.");
+				console.log(event);
+				//
+				//当前是单词
+				if (self.myVideo.src.indexOf('wordmp3') > 0) {
+					console.log("myVideo.wloop:%s", self.myVideo.wloop);
+					if (self.myVideo.wloop)
+						self.myVideo.src = self.myVideo.osrc;
+					else
+						return;
+				} else {
+					self.myVideo.src = self.myVideo.wmp3;
+				}
+				self.myVideo.play();
+			},
+		},
+		on: {
+			pageAfterin: function () {
+				let self = this;
+				self.myVideo = $("#videoPageVideo")[0];
+				//当前选择的科本id
+				self.bid = self.$route.params['bid'];
+				//当前选择的单元id
+				self.uid = self.$route.params['uid'];
+				//
+				self.loop();
+				self.playPause();
+			},
+		},
+	};
+</script>

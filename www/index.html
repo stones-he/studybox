@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="theme-color" content="#2196f3">
+  <meta http-equiv="Content-Security-Policy" content="default-src * 'self' 'unsafe-inline' 'unsafe-eval' data: gap:">
+  <title>StudyBox</title>
+  <link rel="stylesheet" href="framework7/css/framework7.min.css">
+  <link rel="stylesheet" href="css/app.css">
+  <link rel="apple-touch-icon" href="img/f7-icon-square.png">
+  <link rel="icon" href="img/f7-icon.png">
+</head>
+
+<body>
+  <div id="app">
+    <div class="view view-main view-init ios-edges" data-url="/">
+      <div class="page">
+        <div class="navbar">
+          <div class="navbar-inner">
+            <div class="left">
+              <a href="#" class="link icon-only panel-open" data-panel="left">
+                <i class="icon f7-icons ios-only">menu</i>
+                <i class="icon material-icons md-only">menu</i>
+              </a>
+            </div>
+            <div class="title sliding"> StudyBox</div>
+            <!-- <div id="dtemplate" class="title sliding">StudyBox</div> -->
+            <!-- <a href="/video/">Another</a> -->
+            <div class="right">
+              <a class="link icon-only searchbar-enable" data-searchbar=".searchbar-components">
+                <i class="icon f7-icons ios-only">search_strong</i>
+                <i class="icon material-icons md-only">search</i>
+              </a>
+            </div>
+            <form data-search-container=".components-list" data-search-in="a" class="searchbar searchbar-expandable searchbar-components searchbar-init">
+              <div class="searchbar-inner">
+                <div class="searchbar-input-wrap">
+                  <input type="search" placeholder="Search components" />
+                  <i class="searchbar-icon"></i>
+                  <span class="input-clear-button"></span>
+                </div>
+                <span class="searchbar-disable-button">Cancel</span>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="page-content">
+          <!--  -->
+          <div class="list media-list">
+            <ul>
+              <li>
+                <div class="item-content">
+                  <div class="item-media">
+                    <img src="books/5a/0.jpg" width="100" />
+                  </div>
+                  <div class="item-inner">
+                    <a href="/book-details/5a/" class="item-link ">
+                      <div class="item-title-row">
+                        <div class="item-title">五年级上英语（译林）</div>
+                      </div>
+                    </a>
+                    <div class="item-title row">
+                      <a href="/book-details/5a/" class="item-link ">
+                        <div class="item-title col-33 button">点读</div>
+                      </a>
+                      <a href="/book-details/mp3/5a/" class="item-link ">
+                        <div class="item-title col-33 button">录音</div>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </li>
+              <!--
+              <li>
+                <div class="item-content">
+                  <div class="item-media">
+                    <img src="http://www.studybox.com/5b/0.jpg" width="100" />
+                  </div>
+                  <div class="item-inner">
+                    <a href="/book-details/5b/" class="item-link ">
+                      <div class="item-title-row">
+                        <div class="item-title">五年级下英语（译林）</div>
+                      </div>
+                    </a>
+                    <div class="item-title row">
+                      <a href="/book-details/5b/" class="item-link ">
+                        <div class="item-title col-33 button">点读</div>
+                      </a>
+                      <a href="/book-details/mp3/5b/" class="item-link ">
+                        <div class="item-title col-33 button">录音</div>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </li> -->
+              <li>
+                <div class="item-content">
+                  <div class="item-media">
+                    <img src="books/6a/0.jpg" width="100" />
+                  </div>
+                  <div class="item-inner">
+                    <a href="/book-details/6a/" class="item-link ">
+                      <div class="item-title-row">
+                        <div class="item-title">六年级上英语（译林）</div>
+                      </div>
+                    </a>
+                    <div class="item-title row">
+                      <a href="/book-details/6a/" class="item-link ">
+                        <div class="item-title col-33 button">点读</div>
+                      </a>
+                      <a href="/book-details/mp3/6a/" class="item-link ">
+                        <div class="item-title col-33 button">录音</div>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <div class="item-content">
+                  <div class="item-media">
+                    <img src="books/6b/0.jpg" width="100" />
+                  </div>
+                  <div class="item-inner">
+                    <a href="/book-details/6b/" class="item-link ">
+                      <div class="item-title-row">
+                        <div class="item-title">六年级下英语（译林）</div>
+                      </div>
+                    </a>
+                    <div class="item-title row">
+                      <a href="/book-details/6b/" class="item-link ">
+                        <div class="item-title col-33 button">点读</div>
+                      </a>
+                      <a href="/book-details/mp3/6b/" class="item-link ">
+                        <div class="item-title col-33 button">录音</div>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="framework7/js/framework7.min.js"></script>
+  <script src="js/routes.js"></script>
+  <script src="js/app.js"></script>
+</body>
+
+</html>

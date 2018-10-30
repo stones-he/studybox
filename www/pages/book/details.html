@@ -1,0 +1,101 @@
+<template>
+  <div class="page">
+    <div class="navbar">
+      <div class="navbar-inner sliding">
+        <div class="left">
+          <a href="#" class="link back">
+            <i class="icon icon-back"></i>
+            <span class="ios-only">Back</span>
+          </a>
+        </div>
+        <div class="title">Book Details</div>
+      </div>
+    </div>
+    <div class="fab fab-left-bottom color-blue">
+      <a href="#">
+        <!-- Icons For iOS Theme -->
+        <i class="icon f7-icons ios-only">add</i>
+        <i class="icon f7-icons ios-only">close</i>
+        <!-- Icons For MD Theme -->
+        <i class="icon material-icons md-only">add</i>
+        <i class="icon material-icons md-only">close</i>
+        <!-- <div class="fab-text">播/停</div> -->
+      </a>
+      <!-- FAB speed dial actions -->
+      <div class="fab-buttons fab-buttons-right">
+        <a href="#" @click="playPause">播/停</a>
+        <a href="#" @click="speed(0.8)">0.8</a>
+        <a href="#" @click="speed(1.0)">1.0</a>
+        <a href="#" @click="speed(1.5)">1.5</a>
+        <a href="#" @click="speed(2.0)">2.0</a>
+      </div>
+    </div>
+    <div class="page-content">
+      <div class="block block-strong">
+        <div class="row">
+          <div class="col-33">
+            <a href="#" class="button button-raised" @click="openPage">Page</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+<script>
+  return {
+    data: function () {
+      return {
+        photos: [{
+            url: 'http://www.studybox.com/6a/6.jpg',
+            caption: '6'
+          },
+          {
+            url: 'http://www.studybox.com/6a/7.jpg',
+            caption: '7'
+          }
+        ],
+      }
+    },
+    methods: {
+      openPage: function () {
+        const self = this;
+        self.page.open();
+      },
+      playPause: function () {
+        // const self = this;
+        let myVideo = $("#video1")[0];
+        if (myVideo.paused) {
+          myVideo.currentTime = 0;
+          myVideo.play();
+        } else {
+          myVideo.pause();
+        }
+      },
+      speed: function (sp) {
+        let myVideo = $("#video1")[0];
+        myVideo.playbackRate = sp;
+      },
+    },
+    on: {
+      pageInit: function () {
+        const self = this;
+        // Create PBs when page init
+        self.page = self.$app.photoBrowser.create({
+          photos: self.photos,
+          type: 'page',
+          backLinkText: 'Back',
+        });
+
+      },
+      pageAtfterIn: function () {
+        const self = this;
+        self.openPage();
+      },
+      pageBeforeRemove: function () {
+        const self = this;
+        // Destroy PBs on page remove
+        self.page.destroy();
+      },
+    }
+  };
+</script>
