@@ -1,6 +1,6 @@
 {
-    "name": "com.focustech.hello",
-    "displayName": "HelloWorld",
+    "name": "com.focustech.studybox",
+    "displayName": "StudyBox",
     "version": "1.0.1",
     "description": "A sample Apache Cordova application that responds to the deviceready event.",
     "main": "index.js",
