@@ -19,7 +19,7 @@
 				<i class="icon material-icons md-only">close</i>
 			</a>
 			<div class="fab-buttons fab-buttons-right">
-				<a href="#" @click="playPause">播/停</a>
+				<a href="#" @click="playPause()">播/停</a>
 				<a href="#" @click="speed(0.8)">0.8</a>
 				<a href="#" @click="speed(1.0)">1.0</a>
 				<a href="#" @click="speed(1.5)">1.5</a>
@@ -28,7 +28,7 @@
 		</div>
 		<div class="page-content fab-close" id="videoPage">
 			<div class="page-item">
-				<video id="videoPageVideo" controls @ended="this.doVideoPageEnded">
+				<video id="videoPageVideo" controls @ended="this.doVideoPageEnded" @error="this.doError">
 					<source src="" type="audio/mpeg">
 				</video>
 			</div>
@@ -38,14 +38,17 @@
 <script>
 	return {
 		methods: {
-			playPause: function () {
+			playPause: function (suffix) {
 				const self = this;
 				//
 				if (self.uid === 'unitword') {
 					return;
 				}
+				console.log(suffix);
+				suffix = suffix || 'mp3';
+				console.log(suffix + "," + self.myVideo.paused);
 				if (self.myVideo.paused) {
-					let mp3url = `${self.$root.hostName}/${self.bid}/mp3/${self.uid}.mp3`;
+					let mp3url = `${self.$root.hostName}/${self.bid}/mp3/${self.uid}.${suffix}`;
 					console.log(`video:${mp3url}`);
 					self.myVideo.src = mp3url;
 					self.myVideo.osrc = mp3url;
@@ -85,6 +88,12 @@
 					self.myVideo.src = self.myVideo.wmp3;
 				}
 				self.myVideo.play();
+			},
+			doError: function (event) {
+				console.log("doError,%o", event);
+				const self = this;
+				self.myVideo.pause();
+				self.playPause('m4a');
 			},
 		},
 		on: {

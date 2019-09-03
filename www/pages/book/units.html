@@ -57,7 +57,7 @@
     </div>
     <div class="page-content fab-close" id="unitpage">
       <div class="page-item">
-        <video id="video1" @ended="doEnded">
+        <video id="video1" @ended="doEnded" @error="this.doError">
           <source src="" type="audio/mpeg">
         </video>
       </div>
@@ -67,12 +67,13 @@
 <script>
   return {
     methods: {
-      loop: function () {
+      loop: function (suffix) {
         const self = this;
         if (self.index > self.units.length) {
           self.index = 1;
         }
-        let mp3url = `${self.$root.hostName}/${self.bid}/mp3/unit${self.index}.mp3`;
+        suffix = suffix || 'mp3';
+        let mp3url = `${self.$root.hostName}/${self.bid}/mp3/unit${self.index}.${suffix}`;
         console.log("utils:" + mp3url);
         let myVideo = $("#video1")[0];
         myVideo.src = mp3url;
@@ -84,6 +85,12 @@
       doEnded: function (event) {
         const self = this;
         self.loop();
+      },
+      doError: function (event) {
+        console.log("doError,%o", event);
+        const self = this;
+        // self.myVideo.pause();
+        self.loop('m4a');
       },
     },
     data: function () {
